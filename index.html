@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXEM 아이스브레이킹</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#f5f7fa;color:#111;font-family:'Pretendard',system-ui,sans-serif;font-weight:400;overflow-x:hidden}
+:root{
+  --acc:#40E2FF;--acc-dark:#00bcd4;--acc-deep:#0099b3;
+  --text:#111827;--sub:#4b5563;--muted:#9ca3af;
+  --border:#e5e7eb;--border2:#d1d5db;--bg:#f5f7fa;--s2:#f0f4f8;--s3:#e8edf3
+}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle at 80% 10%,#40E2FF16 0%,transparent 50%),
+                   radial-gradient(circle at 10% 90%,#40E2FF0c 0%,transparent 40%)}
+.app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center}
+
+/* ── START ── */
+.start-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;padding:2rem;gap:1.8rem;width:100%;max-width:480px;margin:0 auto;text-align:center}
+.start-badge{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--acc-deep);
+  background:#40E2FF1a;border:1px solid #40E2FF50;border-radius:20px;padding:6px 16px;font-weight:600}
+.start-title{font-size:28px;font-weight:600;line-height:1.35;letter-spacing:-.3px;color:var(--text)}
+.start-title span{color:var(--acc-deep)}
+.start-desc{font-size:14px;color:var(--sub);line-height:1.9;max-width:300px;font-weight:400}
+.start-btn{background:var(--acc);border:none;border-radius:14px;padding:13px 30px;
+  font-size:14px;font-weight:600;color:#fff;cursor:pointer;font-family:'Pretendard',sans-serif;
+  box-shadow:0 4px 18px #40E2FF38;transition:all .2s}
+.start-btn:hover{background:var(--acc-dark);transform:translateY(-2px);box-shadow:0 8px 26px #40E2FF45}
+.start-btn.ghost{background:#fff;border:1.5px solid var(--border2);color:var(--sub);box-shadow:none}
+.start-btn.ghost:hover{border-color:var(--acc);color:var(--acc-deep)}
+.start-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* ── ORDER ── */
+.order-screen{display:flex;flex-direction:column;align-items:center;
+  min-height:100vh;padding:1.5rem 1.5rem 3rem;width:100%;max-width:480px;margin:0 auto;gap:1.2rem}
+.order-title{font-size:20px;font-weight:600;letter-spacing:-.3px;text-align:center;color:var(--text)}
+.order-sub{font-size:13px;color:var(--sub);text-align:center;line-height:1.7;font-weight:400}
+.name-input-row{display:flex;gap:8px;width:100%}
+.name-input{flex:1;background:#fff;border:1.5px solid var(--border2);border-radius:11px;
+  padding:11px 14px;font-size:14px;color:var(--text);outline:none;
+  font-family:'Pretendard',sans-serif;font-weight:400;transition:border-color .15s}
+.name-input:focus{border-color:var(--acc)}
+.add-btn{background:var(--acc);border:none;border-radius:11px;width:44px;height:44px;
+  font-size:22px;color:#fff;cursor:pointer;flex-shrink:0;transition:all .15s;
+  font-weight:300;line-height:1;font-family:'Pretendard',sans-serif}
+.add-btn:hover{background:var(--acc-dark)}
+.name-list{display:flex;flex-direction:column;gap:7px;width:100%}
+.name-chip{background:#fff;border:1.5px solid var(--border);border-radius:10px;
+  padding:10px 14px;display:flex;align-items:center;justify-content:space-between;
+  font-size:14px;font-weight:500;color:var(--text)}
+.chip-num{width:24px;height:24px;border-radius:50%;background:#40E2FF1e;color:var(--acc-deep);
+  font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;
+  padding:2px 6px;transition:color .15s;line-height:1}
+.del-btn:hover{color:#ef4444}
+.shuffle-order-btn{background:#40E2FF13;border:1.5px solid #40E2FF45;border-radius:12px;
+  padding:11px 20px;font-size:14px;font-weight:600;color:var(--acc-deep);cursor:pointer;
+  font-family:'Pretendard',sans-serif;transition:all .18s;display:none;
+  align-items:center;gap:8px;width:100%;justify-content:center}
+.shuffle-order-btn:hover{background:#40E2FF22;border-color:var(--acc)}
+.order-result{width:100%;background:#fff;border:1.5px solid #40E2FF38;border-radius:14px;
+  padding:1.1rem 1.4rem;display:none;flex-direction:column;gap:9px}
+.order-result-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--acc-deep);font-weight:600}
+.order-item{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:500;
+  color:var(--text);animation:slideIn .3s cubic-bezier(.4,0,.2,1) both}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.order-badge{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.ob1{background:#40E2FF22;color:var(--acc-deep)}.ob2{background:#f3f4f6;color:var(--muted)}
+.first-tag{font-size:11px;color:var(--acc-deep);font-weight:600;background:#40E2FF15;
+  border-radius:6px;padding:2px 8px;margin-left:4px}
+.back-link{background:none;border:none;font-size:13px;color:var(--muted);cursor:pointer;
+  font-family:'Pretendard',sans-serif;font-weight:400;transition:color .15s;padding:4px}
+.back-link:hover{color:var(--text)}
+
+/* ── HEADER ── */
+.hdr{width:100%;max-width:600px;padding:1rem 1.5rem;display:flex;align-items:center;
+  justify-content:space-between;border-bottom:1px solid var(--border);background:#fff}
+.cnt{font-size:12px;color:var(--sub);background:var(--s2);border:1px solid var(--border);
+  border-radius:20px;padding:4px 12px;font-weight:500}
+
+/* ── PROGRESS ── */
+.prog-wrap{width:100%;max-width:600px;padding:0 1.5rem .4rem;background:#fff}
+.prog-bg{width:100%;height:3px;background:var(--s3);border-radius:999px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc-dark));
+  border-radius:999px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+
+/* ── TIMER ── */
+.timer-bar-wrap{width:100%;max-width:600px;padding:.7rem 1.5rem .4rem;
+  background:#fff;border-bottom:1px solid var(--border)}
+.timer-bar-bg{width:100%;height:5px;background:var(--s3);border-radius:999px;overflow:hidden}
+.timer-bar-fill{height:100%;border-radius:999px;transition:width 1s linear,background .4s}
+.timer-info{display:flex;align-items:center;justify-content:space-between;padding:5px 0 0}
+.timer-label{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.3px}
+.timer-num{font-size:13px;font-weight:600;color:var(--acc-deep);font-variant-numeric:tabular-nums;transition:color .3s}
+.timer-num.warn{color:#ef4444}
+.timer-done{font-size:11px;color:#16a34a;font-weight:600;text-align:right}
+
+/* ── MAIN ── */
+.main{width:100%;max-width:600px;padding:1.2rem 1.5rem 1rem;flex:1;background:var(--bg)}
+.q-card{background:#fff;border:1px solid var(--border);border-radius:20px;
+  padding:2.2rem 2rem 1.8rem;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:1rem;position:relative;overflow:hidden;
+  animation:cardIn .3s cubic-bezier(.4,0,.2,1);box-shadow:0 2px 14px #0000000a}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.q-card::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;
+  background:radial-gradient(circle,#40E2FF0d,transparent 70%);pointer-events:none}
+.q-num{font-size:11px;letter-spacing:3px;color:var(--acc-deep);text-transform:uppercase;font-weight:600}
+.q-main{font-size:19px;font-weight:600;color:var(--text);text-align:center;line-height:1.5;word-break:keep-all;letter-spacing:-.2px}
+.q-sub{font-size:13px;color:var(--sub);text-align:center;line-height:1.7;word-break:keep-all;font-weight:400}
+.divline{width:24px;height:1px;background:var(--border)}
+
+/* ── CHOICES ── */
+.choices{display:flex;flex-direction:column;gap:8px;width:100%;margin-top:.2rem}
+.ch-btn{width:100%;padding:11px 16px;background:var(--s2);border:1.5px solid var(--border);
+  border-radius:11px;font-size:14px;font-weight:500;color:var(--text);cursor:pointer;
+  transition:all .18s;text-align:left;display:flex;align-items:center;gap:11px;
+  font-family:'Pretendard',sans-serif}
+.ch-btn:hover{border-color:var(--acc);background:#40E2FF0c;transform:translateX(3px)}
+.ch-btn.selected{border-color:var(--acc);background:#40E2FF13;color:var(--acc-deep)}
+.ch-dot{width:7px;height:7px;border-radius:50%;background:var(--border2);flex-shrink:0;transition:all .18s}
+.ch-btn.selected .ch-dot{background:var(--acc);box-shadow:0 0 7px #40E2FF80}
+.reaction{width:100%;background:linear-gradient(135deg,#40E2FF10,#40E2FF04);
+  border:1.5px solid #40E2FF38;border-radius:11px;padding:.85rem 1rem;
+  font-size:13px;color:var(--acc-deep);line-height:1.6;text-align:center;font-weight:500;
+  animation:reactIn .35s cubic-bezier(.4,0,.2,1)}
+@keyframes reactIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+
+/* ── BOTTOM ── */
+.bot{width:100%;max-width:600px;padding:.8rem 1.5rem 2rem;display:flex;align-items:center;gap:10px;background:var(--bg)}
+.icon-btn{width:44px;height:44px;background:#fff;border:1.5px solid var(--border);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted);
+  cursor:pointer;flex-shrink:0;transition:all .18s}
+.icon-btn:hover{border-color:var(--acc);color:var(--acc-deep)}
+.icon-btn:disabled{opacity:.3;cursor:default;pointer-events:none}
+.next-btn{flex:1;height:44px;background:var(--acc);border:none;border-radius:12px;
+  font-size:14px;font-weight:600;color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  font-family:'Pretendard',sans-serif;box-shadow:0 4px 14px #40E2FF30;transition:all .18s}
+.next-btn:hover{background:var(--acc-dark);transform:translateY(-1px);box-shadow:0 7px 22px #40E2FF42}
+.next-btn:active{transform:scale(.98)}
+
+/* ── ROULETTE ── */
+.roulette-overlay{position:fixed;inset:0;background:#00000050;display:flex;align-items:center;
+  justify-content:center;z-index:200;backdrop-filter:blur(6px);animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.roulette-box{background:#fff;border:1.5px solid var(--border);border-radius:22px;
+  padding:2.2rem 2rem;display:flex;flex-direction:column;align-items:center;gap:1.3rem;
+  max-width:340px;width:90%;box-shadow:0 20px 60px #00000018;
+  animation:popIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+.rl-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--acc-deep);font-weight:600}
+.rl-num{font-size:72px;font-weight:600;line-height:1;color:var(--text)}
+.rl-q{font-size:14px;color:var(--sub);text-align:center;line-height:1.6;min-height:44px;word-break:keep-all;font-weight:400}
+.rl-go{background:var(--acc);border:none;border-radius:11px;padding:11px 26px;font-size:14px;
+  font-weight:600;color:#fff;cursor:pointer;font-family:'Pretendard',sans-serif;
+  width:100%;box-shadow:0 4px 14px #40E2FF38;transition:all .15s}
+.rl-go:hover{background:var(--acc-dark)}
+.rl-cancel{background:none;border:none;font-size:13px;color:var(--muted);cursor:pointer;
+  font-family:'Pretendard',sans-serif;font-weight:400}
+.rl-cancel:hover{color:var(--text)}
+
+/* ── FINISH ── */
+.finish-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;gap:1.4rem;padding:2rem;text-align:center}
+.finish-icon{font-size:60px;animation:bounce .8s cubic-bezier(.34,1.56,.64,1)}
+@keyframes bounce{from{transform:scale(0)}to{transform:scale(1)}}
+.finish-t{font-size:24px;font-weight:600;letter-spacing:-.3px;color:var(--text)}
+.finish-s{font-size:14px;color:var(--sub);line-height:1.9;max-width:280px;font-weight:400}
+.finish-btn{background:var(--acc);border:none;border-radius:12px;padding:13px 30px;
+  font-size:14px;font-weight:600;color:#fff;cursor:pointer;font-family:'Pretendard',sans-serif;
+  box-shadow:0 4px 18px #40E2FF32;transition:all .18s;margin-top:.5rem}
+.finish-btn:hover{background:var(--acc-dark);transform:translateY(-1px)}
+</style>
+</head>
+<body>
+
+<div class="app" id="app"></div>
+
+<script>
+// ── SVG LOGOS ──
+const LOGO_SM=`<svg height="24" viewBox="0 0 766 182" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M151.727 112.683C142.877 136.927 119.604 154.25 92.2716 154.25C83.2165 154.25 74.611 152.349 66.8147 148.921C66.378 148.728 66.2367 148.176 66.5321 147.791L158.56 30.023C151.547 22.2412 143.185 15.6793 133.873 10.6968C121.094 3.87808 106.503 0 91.0128 0C40.7927 0 0.0642202 40.6813 0 90.878C0 91.2247 0.012844 91.5843 0.012844 91.9438C0.0770642 99.0836 0.976147 106.031 2.60734 112.683C8.78532 137.929 25.4826 159.155 48.1651 171.278C60.5725 177.916 74.7009 181.756 89.7027 181.961C90.6147 181.987 91.5266 182 92.4514 182C135.53 182 171.738 152.542 182 112.67H151.714L151.727 112.683ZM32.8165 112.683C30.3248 105.851 29.0275 98.3388 29.0018 90.9936C29.0018 56.0652 57.3358 27.7501 92.2716 27.7501C100.594 27.7501 108.545 29.3553 115.815 32.2702C116.264 32.45 116.418 33.015 116.11 33.4003L42.1541 128.054C41.8587 128.439 41.2679 128.426 40.9853 128.041C37.5945 123.354 34.833 118.191 32.8165 112.683Z" fill="#040000"/><path d="M491.727 112.683C482.877 136.927 459.604 154.25 432.272 154.25C423.217 154.25 414.611 152.349 406.815 148.921C406.378 148.728 406.237 148.176 406.532 147.791L498.56 30.023C491.547 22.2412 483.185 15.6793 473.873 10.6968C461.094 3.86524 446.503 0 431.013 0C380.793 0 340.064 40.6813 340 90.878C340 91.2247 340.013 91.5843 340.013 91.9438C340.077 99.0836 340.976 106.031 342.607 112.683C348.785 137.929 365.483 159.155 388.165 171.278C400.572 177.916 414.701 181.756 429.703 181.961C430.615 181.987 431.527 182 432.451 182C475.53 182 511.738 152.542 522 112.67H491.714L491.727 112.683ZM372.804 112.683C370.312 105.851 369.015 98.3388 368.989 90.9936C368.989 56.0652 397.323 27.7501 432.259 27.7501C440.582 27.7501 448.532 29.3553 455.802 32.2702C456.251 32.45 456.406 33.015 456.097 33.4003L382.141 128.054C381.846 128.439 381.255 128.426 380.972 128.041C377.582 123.354 374.82 118.191 372.804 112.683Z" fill="#040000"/><path d="M256.992 65.6134C257.275 65.9735 257.815 65.9735 258.098 65.6134L305.58 4H345L278.978 90.1944C278.785 90.4517 278.785 90.7861 278.978 91.0434L345 178.987H304.243L258.111 116.782C257.828 116.409 257.275 116.396 256.992 116.782L209.78 179H170.103L253.276 71.7876C253.636 71.3245 253.302 70.6556 252.724 70.6556H222.072L170 4H209.819L256.992 65.6005V65.6134Z" fill="#040000"/><path d="M700.254 0C678.102 0 661.827 7.04051 651.015 18.552C650.732 18.8475 650.281 18.8475 649.997 18.552C639.186 7.05336 622.91 0 600.759 0C555.76 0 535 29.0871 535 65.5616V176H567.061V66.3067C567.061 41.1767 582.151 32.0292 600.772 32.0292C619.392 32.0292 634.482 41.1767 634.482 66.3067V176V175.897L666.531 176V66.3067C666.531 41.1767 681.62 32.0292 700.228 32.0292C718.836 32.0292 733.939 41.1767 733.939 66.3067V175.987H766V65.5616C766 29.0999 745.253 0 700.241 0H700.254Z" fill="#040000"/></svg>`;
+const LOGO_LG=`<svg height="34" viewBox="0 0 766 182" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M151.727 112.683C142.877 136.927 119.604 154.25 92.2716 154.25C83.2165 154.25 74.611 152.349 66.8147 148.921C66.378 148.728 66.2367 148.176 66.5321 147.791L158.56 30.023C151.547 22.2412 143.185 15.6793 133.873 10.6968C121.094 3.87808 106.503 0 91.0128 0C40.7927 0 0.0642202 40.6813 0 90.878C0 91.2247 0.012844 91.5843 0.012844 91.9438C0.0770642 99.0836 0.976147 106.031 2.60734 112.683C8.78532 137.929 25.4826 159.155 48.1651 171.278C60.5725 177.916 74.7009 181.756 89.7027 181.961C90.6147 181.987 91.5266 182 92.4514 182C135.53 182 171.738 152.542 182 112.67H151.714L151.727 112.683ZM32.8165 112.683C30.3248 105.851 29.0275 98.3388 29.0018 90.9936C29.0018 56.0652 57.3358 27.7501 92.2716 27.7501C100.594 27.7501 108.545 29.3553 115.815 32.2702C116.264 32.45 116.418 33.015 116.11 33.4003L42.1541 128.054C41.8587 128.439 41.2679 128.426 40.9853 128.041C37.5945 123.354 34.833 118.191 32.8165 112.683Z" fill="#040000"/><path d="M491.727 112.683C482.877 136.927 459.604 154.25 432.272 154.25C423.217 154.25 414.611 152.349 406.815 148.921C406.378 148.728 406.237 148.176 406.532 147.791L498.56 30.023C491.547 22.2412 483.185 15.6793 473.873 10.6968C461.094 3.86524 446.503 0 431.013 0C380.793 0 340.064 40.6813 340 90.878C340 91.2247 340.013 91.5843 340.013 91.9438C340.077 99.0836 340.976 106.031 342.607 112.683C348.785 137.929 365.483 159.155 388.165 171.278C400.572 177.916 414.701 181.756 429.703 181.961C430.615 181.987 431.527 182 432.451 182C475.53 182 511.738 152.542 522 112.67H491.714L491.727 112.683ZM372.804 112.683C370.312 105.851 369.015 98.3388 368.989 90.9936C368.989 56.0652 397.323 27.7501 432.259 27.7501C440.582 27.7501 448.532 29.3553 455.802 32.2702C456.251 32.45 456.406 33.015 456.097 33.4003L382.141 128.054C381.846 128.439 381.255 128.426 380.972 128.041C377.582 123.354 374.82 118.191 372.804 112.683Z" fill="#040000"/><path d="M256.992 65.6134C257.275 65.9735 257.815 65.9735 258.098 65.6134L305.58 4H345L278.978 90.1944C278.785 90.4517 278.785 90.7861 278.978 91.0434L345 178.987H304.243L258.111 116.782C257.828 116.409 257.275 116.396 256.992 116.782L209.78 179H170.103L253.276 71.7876C253.636 71.3245 253.302 70.6556 252.724 70.6556H222.072L170 4H209.819L256.992 65.6005V65.6134Z" fill="#040000"/><path d="M700.254 0C678.102 0 661.827 7.04051 651.015 18.552C650.732 18.8475 650.281 18.8475 649.997 18.552C639.186 7.05336 622.91 0 600.759 0C555.76 0 535 29.0871 535 65.5616V176H567.061V66.3067C567.061 41.1767 582.151 32.0292 600.772 32.0292C619.392 32.0292 634.482 41.1767 634.482 66.3067V176V175.897L666.531 176V66.3067C666.531 41.1767 681.62 32.0292 700.228 32.0292C718.836 32.0292 733.939 41.1767 733.939 66.3067V175.987H766V65.5616C766 29.0999 745.253 0 700.241 0H700.254Z" fill="#040000"/></svg>`;
+
+// ── QUESTIONS ──
+const Q=[
+  // 처음 만난 사람 + 기존 팀원 모두 즐길 수 있는 믹스
+  {n:1,main:"지금 이 자리에 오면서 가장 먼저 든 생각은?",sub:null,type:"open"},
+  {n:2,main:"요즘 가장 자주 듣는 말이 있다면?",sub:"칭찬이든 잔소리든 뭐든요 :)",type:"open"},
+  {n:3,main:"지금 이 순간 가장 기대되는 것은?",sub:null,type:"choice",opts:["점심 메뉴 🍽️","오늘 퇴근 후 🌙","다음 프로젝트 💡","다음 휴가 ✈️"],
+    reacts:["점심파가 최다! 오늘 메뉴 어디로 할지 눈치 싸움 시작 👀","퇴근파가 최다! 오늘 하루도 파이팅하고 칼퇴 고고 🏃","프로젝트파 발견! 일이 즐거운 분들이시군요 ✨","여행파가 최다! 다들 속으로 여행지 검색 중이시죠? 🗺️"]},
+  {n:4,main:"월요일 아침, 나의 모습은?",sub:null,type:"choice",opts:["일찍 일어나서 여유롭게 준비 ☀️","최대한 버티다 겨우 출발 😤","전날 밤 이미 멘탈 준비 완료 🛡️","그냥 자동으로 눈이 떠짐 🤖"],
+    reacts:["여유파가 많네요! 실제로는 어떠세요? 🤔","벼락파가 최다! 동질감 느끼는 분 많으시죠? 😂","준비파 발견! 멘탈 관리가 뛰어나신 분이네요 💪","자동화파! 몸이 알아서 출근하는 경지에 오르셨군요 🤖"]},
+  {n:5,main:"요즘 꽂혀있는 음식이나 카페, 장소가 있나요?",sub:"추천 이유도 함께 알려주세요!",type:"open"},
+  {n:6,main:"지금 하는 일에서 가장 보람을 느끼는 순간은?",sub:"어떤 순간에 '잘 하고 있다'는 느낌이 드나요?",type:"open"},
+  {n:7,main:"나의 업무 스타일을 고른다면?",sub:null,type:"choice",opts:["🎯 계획 세우고 딱딱 실행하는 타입","🌊 흐름에 따라 유연하게 대처하는 타입","🔍 디테일 꼼꼼하게 챙기는 타입","💡 아이디어로 문제 푸는 타입"],
+    reacts:["계획형 최다! 우리 팀 일정표 담당이시겠네요 📅","유연형 최다! 어떤 상황에도 흔들리지 않는 분들이시군요 🌊","디테일형 최다! 오타 잡아주실 분 찾았네요 🔍","아이디어형 최다! 다음 기획 회의가 기대됩니다 💡"]},
+  {n:8,main:"스트레스를 푸는 나만의 방법이 있다면?",sub:"어떤 계기로 그 방법을 찾게 됐나요?",type:"open"},
+  {n:9,main:"여행지 숙소 취향은?",sub:null,type:"choice",opts:["바다가 보이는 뷰 🏖️","맑은 공기의 산속 ⛰️","도시 한복판 호텔 🏙️","아늑한 감성 숙소 🏡"],
+    reacts:["바다파 최다! 파도 소리 들으며 멍때리기 최고 🌊","산파 최다! 새벽 공기 마시며 힐링하는 분들이네요 ⛰️","도심파 최다! 새벽에도 편의점 갈 수 있어야 하죠 🏙️","감성파 최다! 인스타 감성 사진 꼭 남기실 것 같아요 📸"]},
+  {n:10,main:"나를 가장 잘 표현하는 단어 하나를 고른다면?",sub:"그 단어를 고른 이유가 있나요?",type:"open"},
+  {n:11,main:"요즘 가장 즐겨 쓰는 앱이나 서비스는?",sub:"어떤 계기로 쓰기 시작했나요?",type:"open"},
+  {n:12,main:"회사 동료와 이상적인 점심 시간은?",sub:null,type:"choice",opts:["다 같이 우르르 같은 메뉴 🤝","취향대로 각자 먹고 합류 🍱","매일 새로운 곳 탐방 🗺️","맛집 리스트 돌아가며 정복 🏆"],
+    reacts:["함께파 최다! 오늘 점심 같이 드실 분? 🤚","각자파 최다! 각자의 점심을 존중하는 문화 👍","탐방파 최다! 이 분들이 팀 맛집 지도 만들어 주실 분들이에요 🗺️","정복파 최다! 이미 리스트 있으신 분 있으면 공유해 주세요! 🙏"]},
+  {n:13,main:"기억에 남는 여행지와 그 이유는?",sub:"그 여행에서 가장 특별했던 순간은 어떤 장면이었나요?",type:"open"},
+  {n:14,main:"팀 회식, 어떤 스타일이 가장 좋아요?",sub:null,type:"choice",opts:["맛집 저녁 + 2차 노래방 🎤","맛있는 점심으로 가볍게 🍽️","액티비티 + 식사 🎳","아무데나 맛있으면 OK 👍"],
+    reacts:["저녁 + 노래방파! 오늘 회식 여기서 정하고 가시는 건가요? 🎤","점심파! 낮에 먹고 칼퇴하는 가장 현명한 선택 😄","액티비티파! 몸으로 친해지는 스타일이시군요 🎳","아무나파가 최다! 가장 현실적이고 건강한 선택입니다 👍"]},
+  {n:15,main:"주말 오전, 나는?",sub:null,type:"choice",opts:["늦잠은 기본, 12시 넘어서 일어나기 😴","일찍 일어나서 카페 가기 ☕","운동이나 산책으로 시작 🏃","그때그때 달라요 🎲"],reacts:["늦잠파 최다! 주말 알람은 끄는 게 맞죠 😴","카페파 최다! 주말 아침 카페 분위기는 진짜 최고죠 ☕","운동파 최다! 주말에도 부지런하신 분들이시네요 🏃","자유파 최다! 가장 건강한 마인드입니다 🎲"]},
+  {n:16,main:"요즘 가장 빠져있는 것은?",sub:"언제부터, 어떻게 시작하게 됐나요?",type:"open"},
+  {n:17,main:"나의 에너지 충전법은?",sub:null,type:"choice",opts:["사람들 만나서 수다 배터리 200% ⚡","집콕 혼자만의 무한 충전 🛋️","운동으로 땀 쫙 빼기 🏃","맛있는 거 먹기 🍜"],
+    reacts:["사람파 최다! 오늘 이 자리에서 에너지 가득 받고 가세요 ⚡","집콕파 최다! 오늘 집에 가시면 바로 충전 시작이겠네요 🛋️","운동파 최다! 건강하고 멋진 분들이시네요 🏃","음식파 최다! 다음 맛집은 어디로 가실 예정인가요? 🍜"]},
+  {n:18,main:"최근에 새롭게 배우거나 도전해본 것이 있나요?",sub:"어떤 계기로 시작하게 됐나요?",type:"open"},
+  {n:19,main:"퇴근 후 황금 같은 시간, 어떻게 보내나요?",sub:null,type:"choice",opts:["집에서 완전 휴식 모드 🛏️","취미 활동 / 자기계발 📚","약속 잡고 사람 만나기 🍻","그때그때 다름 🎲"],
+    reacts:["집파 최다! 퇴근 후 침대가 부른다 🛏️","자기계발파 최다! 퇴근 후에도 성장 중이신 분들이시네요 💪","약속파 최다! 퇴근 후 2차 가실 분 손! 🙋","그때그때파 최다! 가장 자유로운 영혼이시네요 🦋"]},
+  {n:20,main:"함께 일하고 싶은 동료 스타일은?",sub:null,type:"choice",opts:["뭐든 빠릿빠릿하게 처리하는 실행파 ⚡","차분하게 깊이 생각하는 신중파 🤔","팀 분위기 띄워주는 에너지 메이커 🎉","묵묵히 든든하게 지원해주는 서포터 🤝"],
+    reacts:["실행파 선호 최다! 일 잘하는 분들이 많이 모인 것 같은데요? ⚡","신중파 선호 최다! 실수 없는 팀을 원하시는군요 🤔","에너지 메이커 선호 최다! 우리 팀에 그런 분 있나요? 🎉","서포터 선호 최다! 팀워크를 중요시하시는 분들이네요 🤝"]},
+  {n:21,main:"하루 동안 다른 직업을 가질 수 있다면?",sub:"그 직업을 선택한 이유가 있나요?",type:"open"},
+  {n:22,main:"가장 좋아하는 날씨는?",sub:null,type:"choice",opts:["맑고 시원한 가을 하늘 🍂","따뜻한 햇살이 내리쬐는 봄날 🌸","시원한 에어컨 아래 장마 비소리 🌧️","눈 펑펑 오는 겨울 ❄️"],reacts:["가을파 최다! 선선한 바람에 커피 한 잔이 생각나는 계절이죠 🍂","봄파 최다! 벚꽃 보러 가고 싶어지는 분들이 많네요 🌸","비파 최다! 실내에서 빗소리 듣는 감성 최고 🌧️","겨울파 최다! 눈 오는 날 붕어빵이 생각나시나요? ❄️"]},
+  {n:23,main:"점심 메뉴 선택, 나는?",sub:null,type:"choice",opts:["한식 🍚","양식 🍝","분식 🌶️","아시안 🍜"],
+    reacts:["한식파 최다! 밥심으로 일한다 💪","양식파 최다! 오늘 점심 파스타 어때요? 🍝","분식파 최다! 떡볶이는 언제 먹어도 옳다 🌶️","아시안파 최다! 쌀국수냐 라멘이냐 그것이 문제로다 🍜"]},
+  {n:24,main:"출근길, 어떤 타입이에요?",sub:null,type:"choice",opts:["일찍 나와서 여유롭게 커피 한 잔 ☕","딱 맞춰 도착 타입 ⏱️","만원버스 30분 컷 🚌","텅 빈 버스에서 꿀잠 90분 😴"],
+    reacts:["여유파 최다! 아침 커피 한 잔의 여유가 하루를 만든다 ☕","정시파 최다! 1분 1초 계산하는 시간 관리 장인이시네요 ⏱️","만원버스파 최다! 납작해질 각오로 출근하시는군요 🚌","꿀잠파 최다! 90분이면 드라마 한 편도 가능하죠 😴"]},
+  {n:25,main:"나만 아는 소소한 취미나 루틴이 있나요?",sub:"언제부터 시작했는지도 알려주세요!",type:"open"},
+  {n:26,main:"나의 취미를 딱 한 줄로 소개한다면?",sub:"그 취미를 시작하게 된 계기가 있나요?",type:"open"},
+  {n:27,main:"마지막으로, 오늘 이 자리에서 새로 알게 된 것이 있다면?",sub:"오늘 누군가에 대해 놀랍거나 새로웠던 점을 나눠주세요 :)",type:"open"},
+  {n:28,main:"평생 딱 하나의 음식만 먹어야 한다면?",sub:"그 음식을 고른 이유도 알려주세요!",type:"open"}
+];
+
+const TIMER_SEC=60;
+let st={screen:'start',cur:0,sel:null,showReact:false,timerLeft:TIMER_SEC,timerActive:false,showRoulette:false,rouletteNum:null,rouletteFinal:false,names:[],orderResult:[]};
+let timerIv=null;
+const app=document.getElementById('app');
+
+function startAutoTimer(){
+  clearInterval(timerIv);st.timerLeft=TIMER_SEC;st.timerActive=true;
+  timerIv=setInterval(()=>{
+    if(!st.timerActive){clearInterval(timerIv);return;}
+    st.timerLeft=Math.max(0,st.timerLeft-1);
+    if(st.timerLeft===0){clearInterval(timerIv);st.timerActive=false;}
+    updateTimerDOM();
+  },1000);
+}
+function stopTimer(){clearInterval(timerIv);st.timerActive=false;}
+
+function updateTimerDOM(){
+  const s=st.timerLeft,pct=(s/TIMER_SEC)*100;
+  const fill=document.getElementById('t-fill'),num=document.getElementById('t-num'),done=document.getElementById('t-done');
+  const bc=s<=10?'#ef4444':s<=20?'#f59e0b':'#40E2FF';
+  if(fill){fill.style.width=pct+'%';fill.style.background=bc;}
+  if(num){num.textContent=s+'s';num.className='timer-num'+(s<=10?' warn':'');}
+  if(done)done.style.display=s===0?'block':'none';
+}
+
+function goNext(){
+  stopTimer();
+  if(st.cur>=Q.length-1){st.screen='finish';render();return;}
+  st.cur++;st.sel=null;st.showReact=false;render();startAutoTimer();
+}
+function goPrev(){
+  if(st.cur===0)return;
+  stopTimer();st.cur--;st.sel=null;st.showReact=false;render();startAutoTimer();
+}
+
+// ── NAME INPUT BUG FIX: 별도 함수 처리, Enter 시 ime 이슈 방지 ──
+function addName(){
+  const inp=document.getElementById('name-inp');
+  if(!inp)return;
+  const v=inp.value.trim();
+  if(!v)return;
+  st.names=[...st.names,v];
+  inp.value='';
+  inp.focus();
+  renderNameList();
+}
+
+function handleNameKey(e){
+  // isComposing: 한글 조합 중에는 Enter 무시
+  if(e.key==='Enter'&&!e.isComposing){
+    e.preventDefault();
+    addName();
+  }
+}
+
+function delName(i){
+  st.names=st.names.filter((_,idx)=>idx!==i);
+  st.orderResult=[];
+  renderNameList();
+}
+
+function renderNameList(){
+  const nl=document.getElementById('name-list');
+  const btn=document.getElementById('shuffle-order-btn');
+  if(!nl)return;
+  nl.innerHTML=st.names.map((n,i)=>`
+    <div class="name-chip">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="chip-num">${i+1}</div>
+        <span>${escHtml(n)}</span>
+      </div>
+      <button class="del-btn" onclick="delName(${i})">✕</button>
+    </div>`).join('');
+  if(btn)btn.style.display=st.names.length>=2?'flex':'none';
+  renderOrderResult();
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function shuffleOrder(){
+  const arr=[...st.names];
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  st.orderResult=arr;renderOrderResult();
+}
+
+function renderOrderResult(){
+  const el=document.getElementById('order-result');if(!el)return;
+  if(!st.orderResult.length){el.style.display='none';return;}
+  el.style.display='flex';
+  el.innerHTML=`<div class="order-result-title">발표 순서</div>`+
+    st.orderResult.map((n,i)=>`
+      <div class="order-item" style="animation-delay:${i*0.06}s">
+        <div class="order-badge ${i===0?'ob1':'ob2'}">${i+1}</div>
+        <span>${escHtml(n)}</span>
+        ${i===0?'<span class="first-tag">첫 번째!</span>':''}
+      </div>`).join('');
+}
+
+function selectChoice(i){
+  st.sel=i;
+  document.querySelectorAll('.ch-btn').forEach((b,idx)=>b.classList.toggle('selected',idx===i));
+  const q=Q[st.cur];
+  if(!document.querySelector('.reaction')&&q.reacts){
+    const c=document.querySelector('.choices');
+    if(c)c.insertAdjacentHTML('afterend',`<div class="reaction">${q.reacts[Math.min(i,q.reacts.length-1)]}</div>`);
+  }
+}
+
+function doShuffle(){
+  st.showRoulette=true;st.rouletteFinal=false;st.rouletteNum=0;render();
+  let c=0;
+  const iv=setInterval(()=>{
+    st.rouletteNum=Math.floor(Math.random()*Q.length);
+    const el=document.getElementById('rl-num');if(el)el.textContent='Q'+(st.rouletteNum+1);
+    c++;if(c>=22){
+      clearInterval(iv);const t=Math.floor(Math.random()*Q.length);st.rouletteNum=t;st.rouletteFinal=true;
+      const nel=document.getElementById('rl-num'),ql=document.getElementById('rl-q'),go=document.getElementById('rl-go');
+      if(nel)nel.textContent='Q'+(t+1);if(ql)ql.textContent=Q[t].main;if(go)go.style.display='block';
+    }
+  },75);
+}
+function jumpRoulette(){st.cur=st.rouletteNum;st.showRoulette=false;st.sel=null;st.showReact=false;render();startAutoTimer();}
+
+function render(){
+  if(st.screen==='start'){app.innerHTML=rStart();return;}
+  if(st.screen==='order'){app.innerHTML=rOrder();requestAnimationFrame(bindOrderEvents);return;}
+  if(st.screen==='finish'){app.innerHTML=rFinish();return;}
+  app.innerHTML=rQuiz();
+  if(st.showRoulette)app.insertAdjacentHTML('beforeend',rRoulette());
+}
+
+function bindOrderEvents(){
+  const inp=document.getElementById('name-inp');
+  if(inp){
+    inp.removeEventListener('keydown',handleNameKey);
+    inp.addEventListener('keydown',handleNameKey);
+  }
+}
+
+function rStart(){return`<div class="start-screen">
+  ${LOGO_LG}
+  <div class="start-badge">🧊 Ice Breaking</div>
+  <div class="start-title">처음 만나는 순간을<br><span>조금 더 즐겁게!</span></div>
+  <div class="start-desc">간단한 질문과 답변으로 서로를 알아가고<br>분위기를 자연스럽게 풀어가는 시간이에요.<br>가볍게, 재미있게, 함께 즐겨봐요 :)</div>
+  <div class="start-row">
+    <button class="start-btn" onclick="st.screen='order';render()">👥 순서 정하고 시작</button>
+    <button class="start-btn ghost" onclick="st.screen='quiz';render();startAutoTimer()">바로 시작 →</button>
+  </div>
+</div>`;}
+
+function rOrder(){return`<div class="order-screen">
+  <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-top:.3rem">
+    ${LOGO_SM}
+    <button class="back-link" onclick="st.screen='start';render()">← 뒤로</button>
+  </div>
+  <div class="order-title">🎲 발표 순서 정하기</div>
+  <div class="order-sub">이름을 입력하고 셔플하면<br>랜덤으로 순서를 배정해드려요!</div>
+  <div class="name-input-row">
+    <input class="name-input" id="name-inp" placeholder="이름 입력 후 Enter" autocomplete="off">
+    <button class="add-btn" onclick="addName()">+</button>
+  </div>
+  <div class="name-list" id="name-list"></div>
+  <button class="shuffle-order-btn" id="shuffle-order-btn" onclick="shuffleOrder()">🔀 순서 랜덤 배정!</button>
+  <div class="order-result" id="order-result"></div>
+  <button class="start-btn" onclick="st.screen='quiz';render();startAutoTimer()">질문 시작하기 →</button>
+</div>`;}
+
+function rQuiz(){
+  const q=Q[st.cur],pct=(st.cur/Q.length)*100,s=st.timerLeft;
+  const bc=s<=10?'#ef4444':s<=20?'#f59e0b':'#40E2FF';
+  let inner='';
+  if(q.type==='choice'){
+    inner=`<div class="choices">${q.opts.map((o,i)=>`<button class="ch-btn${st.sel===i?' selected':''}" onclick="selectChoice(${i})"><span class="ch-dot"></span>${o}</button>`).join('')}</div>`;
+    if(st.sel!==null&&q.reacts)inner+=`<div class="reaction">${q.reacts[Math.min(st.sel,q.reacts.length-1)]}</div>`;
+  }
+  return`<div class="hdr">${LOGO_SM}<span class="cnt">${st.cur+1} / ${Q.length}</span></div>
+  <div class="prog-wrap"><div class="prog-bg"><div class="prog-fill" style="width:${pct}%"></div></div></div>
+  <div class="timer-bar-wrap">
+    <div class="timer-bar-bg"><div class="timer-bar-fill" id="t-fill" style="width:${(s/TIMER_SEC)*100}%;background:${bc}"></div></div>
+    <div class="timer-info">
+      <span class="timer-label">⏱ 답변 시간</span>
+      <span class="timer-num${s<=10?' warn':''}" id="t-num">${s}s</span>
+    </div>
+    <div class="timer-done" id="t-done" style="display:${s===0?'block':'none'};text-align:right;padding-top:2px">✓ 시간 완료! 다음으로 넘어가세요</div>
+  </div>
+  <div class="main"><div class="q-card">
+    <div class="q-num">Question ${st.cur+1}</div>
+    <div class="q-main">${q.main}</div>
+    ${q.sub?`<div class="divline"></div><div class="q-sub">${q.sub}</div>`:''}
+    ${inner}
+  </div></div>
+  <div class="bot">
+    <button class="icon-btn" onclick="goPrev()" ${st.cur===0?'disabled':''}>‹</button>
+    <button class="next-btn" onclick="goNext()">${st.cur>=Q.length-1?'완료! 🎉':'다음 질문 →'}</button>
+    <button class="icon-btn" onclick="doShuffle()" title="랜덤 뽑기">⇄</button>
+  </div>`;}
+
+function rRoulette(){return`<div class="roulette-overlay">
+  <div class="roulette-box">
+    <div class="rl-eyebrow">Random Pick</div>
+    <div class="rl-num" id="rl-num">Q${st.rouletteNum+1}</div>
+    <div class="rl-q" id="rl-q">${st.rouletteFinal?Q[st.rouletteNum].main:'뽑는 중...'}</div>
+    <button class="rl-go" id="rl-go" style="display:${st.rouletteFinal?'block':'none'}" onclick="jumpRoulette()">이 질문으로 이동 →</button>
+    <button class="rl-cancel" onclick="st.showRoulette=false;render()">닫기</button>
+  </div>
+</div>`;}
+
+function rFinish(){return`<div class="finish-screen">
+  <div class="finish-icon">🎉</div>
+  <div class="finish-t">모든 질문 완료!</div>
+  <div class="finish-s">오늘 이 자리를 통해 서로를<br>조금 더 알게 된 시간이었길 바라요.<br>함께해서 즐거웠어요 ✨</div>
+  <button class="finish-btn" onclick="stopTimer();st={screen:'start',cur:0,sel:null,showReact:false,timerLeft:60,timerActive:false,showRoulette:false,rouletteNum:null,rouletteFinal:false,names:[],orderResult:[]};render()">처음으로 돌아가기</button>
+</div>`;}
+
+render();
+</script>
+</body>
+</html>
